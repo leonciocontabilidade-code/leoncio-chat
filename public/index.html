@@ -321,6 +321,249 @@
       font-weight: 600;
     }
 
+    /* ===== NOTICES VIEW (NEW DESIGN) ===== */
+    .notices-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: white;
+    }
+
+    .notices-header {
+      padding: 30px 40px;
+      background: white;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .notices-header-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .notices-header-icon {
+      font-size: 32px;
+    }
+
+    .notices-header-title h1 {
+      color: #2c3e50;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .notices-header-subtitle {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .notices-header-description {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .notices-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px;
+    }
+
+    .notices-welcome {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border-left: 4px solid #667eea;
+    }
+
+    .notices-welcome-title {
+      color: #2c3e50;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .notices-welcome-text {
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .notice-message {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .notice-message:last-child {
+      border-bottom: none;
+    }
+
+    .notice-message-header {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .notice-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .notice-message-info {
+      flex: 1;
+    }
+
+    .notice-message-author {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 15px;
+    }
+
+    .notice-message-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: #95a5a6;
+      margin-top: 4px;
+    }
+
+    .notice-message-time {
+      color: #95a5a6;
+    }
+
+    .notice-message-status {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    .notice-message-content {
+      color: #2c3e50;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-left: 55px;
+      font-size: 14px;
+    }
+
+    .notices-composer {
+      padding: 20px 40px 40px;
+      border-top: 1px solid #ecf0f1;
+      background: #f8f9fa;
+    }
+
+    .composer-header {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .composer-area {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .composer-toolbar {
+      padding: 10px;
+      border-bottom: 1px solid #ecf0f1;
+      display: flex;
+      gap: 5px;
+      background: #f8f9fa;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .composer-toolbar button {
+      padding: 6px 10px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      color: #7f8c8d;
+    }
+
+    .composer-toolbar button:hover {
+      background: #f8f9fa;
+      color: #2c3e50;
+    }
+
+    .composer-input {
+      padding: 15px;
+      border: none;
+      resize: none;
+      font-family: inherit;
+      font-size: 14px;
+      color: #2c3e50;
+      min-height: 100px;
+    }
+
+    .composer-input::placeholder {
+      color: #95a5a6;
+    }
+
+    .composer-input:focus {
+      outline: none;
+    }
+
+    .composer-footer {
+      padding: 10px 15px;
+      border-top: 1px solid #ecf0f1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #f8f9fa;
+    }
+
+    .composer-btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .composer-btn-cancel {
+      background: #ecf0f1;
+      color: #2c3e50;
+    }
+
+    .composer-btn-cancel:hover {
+      background: #d5dbdd;
+    }
+
+    .composer-btn-send {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .composer-btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .composer-btn-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     /* ===== MAIN CONTENT ===== */
     .main-content {
       flex: 1;
@@ -797,11 +1040,8 @@
           <div class="channels" id="channelsList"></div>
         </div>
 
-        <!-- Notices View -->
-        <div id="noticesView" style="display: none; flex: 1; overflow-y: auto;">
-          <button id="createNoticeBtn" class="btn-icon" style="width: 100%; margin-bottom: 10px; display: none;">➕ Novo Aviso</button>
-          <div id="noticesList" style="padding: 10px; overflow-y: auto; max-height: calc(100% - 50px);"></div>
-        </div>
+        <!-- Notices View (will be inserted dynamically) -->
+        <div id="noticesView" style="display: none; flex: 1; overflow-y: auto;"></div>
 
         <div class="sidebar-footer">
           <button class="btn-icon" id="editProfileBtn">⚙️ Perfil</button>
@@ -1185,21 +1425,92 @@
     }
 
     function displayNotices() {
-      noticesList.innerHTML = notices.map(notice => {
-        const isUnread = !notice.readBy.includes(currentUser.email);
-        return `
-          <div class="notice-item ${isUnread ? 'unread' : ''}" onclick="openNoticeDetail('${notice.id}')">
-            <div class="notice-title">
-              ${notice.title}
-              ${isUnread ? '<span class="unread-badge">NÃO LIDO</span>' : ''}
+      // Rebuild entire notices view with new professional design
+      const unreadCount = notices.filter(n => !n.readBy.includes(currentUser.email)).length;
+
+      let html = `
+        <div class="notices-container">
+          <!-- HEADER -->
+          <div class="notices-header">
+            <div class="notices-header-title">
+              <span class="notices-header-icon">📢</span>
+              <div>
+                <h1>#avisos</h1>
+                <p class="notices-header-subtitle">🔔 COMUNICADOS, RECADOS E INFORMAÇÕES DA EMPRESA</p>
+              </div>
             </div>
-            <div class="notice-meta">
-              <span class="notice-author">${notice.createdBy}</span>
-              <span>${new Date(notice.createdAt).toLocaleDateString('pt-BR')}</span>
-            </div>
+            <p class="notices-header-description">
+              Compartilhe comunicados e atualizações sobre notícias da empresa, eventos futuros ou colegas de equipe que merecem parabéns.
+              <span style="float: right; color: #667eea; cursor: pointer;">⭐</span>
+            </p>
           </div>
-        `;
-      }).join('');
+
+          <!-- CONTENT -->
+          <div class="notices-content">
+            <!-- WELCOME MESSAGE -->
+            <div class="notices-welcome">
+              <div class="notices-welcome-title">Todos estão aqui no canal #avisos</div>
+              <p class="notices-welcome-text">
+                Compartilhe comunicados e atualizações sobre notícias da empresa, eventos futuros ou colegas de equipe que merecem parabéns.
+              </p>
+            </div>
+
+            <!-- NOTICES MESSAGES -->
+            ${notices.map(notice => {
+              const isUnread = !notice.readBy.includes(currentUser.email);
+              const createdDate = new Date(notice.createdAt);
+              const time = createdDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+              const date = createdDate.toLocaleDateString('pt-BR');
+              const readCount = notice.readBy.length;
+
+              return `
+                <div class="notice-message">
+                  <div class="notice-message-header">
+                    <img src="https://i.pravatar.cc/150?u=${notice.email}" alt="Avatar" class="notice-avatar" />
+                    <div class="notice-message-info">
+                      <div class="notice-message-author">${notice.createdBy}</div>
+                      <div class="notice-message-meta">
+                        <span class="notice-message-time">${time}</span>
+                        <span>${date}</span>
+                        <span class="notice-message-status">✅ Lido por ${readCount}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="margin-left: 55px; margin-bottom: 10px; font-weight: 700; color: #2c3e50; font-size: 15px;">
+                      ${notice.title}
+                    </div>
+                    <div class="notice-message-content">${notice.content}</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- COMPOSER (only if admin) -->
+          ${currentUser.role === 'admin' ? `
+            <div class="notices-composer">
+              <div class="composer-header">Enviar mensagem para #avisos</div>
+              <div class="composer-area">
+                <div class="composer-toolbar">
+                  <button type="button" title="Negrito"><strong>B</strong></button>
+                  <button type="button" title="Itálico"><em>I</em></button>
+                  <button type="button" title="Underline"><u>U</u></button>
+                  <button type="button" title="Link">🔗</button>
+                  <button type="button" title="Código">&lt;/&gt;</button>
+                </div>
+                <textarea id="noticeComposerInput" class="composer-input" placeholder="Escreva um novo aviso aqui..." spellcheck="true"></textarea>
+                <div class="composer-footer">
+                  <button type="button" class="composer-btn composer-btn-cancel" onclick="clearNoticeComposer()">Cancelar</button>
+                  <button type="button" class="composer-btn composer-btn-send" onclick="publishNotice()">Publicar Aviso</button>
+                </div>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      noticesView.innerHTML = html;
       updateNoticeTabBadge();
     }
 
@@ -1237,54 +1548,8 @@
       }
     }
 
-    // Event Listeners for Notices
-    createNoticeBtn.addEventListener('click', () => {
-      noticeTitle.value = '';
-      noticeContent.value = '';
-      noticeModal.classList.add('active');
-    });
-
-    cancelNoticeBtn.addEventListener('click', () => {
-      noticeModal.classList.remove('active');
-    });
-
-    saveNoticeBtn.addEventListener('click', async () => {
-      const title = noticeTitle.value.trim();
-      const content = noticeContent.value.trim();
-
-      if (!title || !content) {
-        alert('Preencha título e mensagem!');
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/notices', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title,
-            content,
-            email: currentUser.email,
-            name: currentUser.name
-          })
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          alert(error.error);
-          return;
-        }
-
-        noticeModal.classList.remove('active');
-        loadNotices();
-      } catch (error) {
-        alert('Erro ao criar aviso: ' + error.message);
-      }
-    });
-
-    closeNoticeBtn.addEventListener('click', () => {
-      noticeDetailModal.classList.remove('active');
-    });
+    // Note: Event listeners for notice composer are now handled inline in publishNotice() function
+    // This eliminates the need for the separate notice modal
 
     // Show notice alert banner
     function showNoticeAlert(notice) {
@@ -1316,6 +1581,51 @@
       } else {
         noticeTabBtn.textContent = '📢 Avisos';
       }
+    }
+
+    // Publish notice from composer
+    async function publishNotice() {
+      const input = document.getElementById('noticeComposerInput');
+      if (!input) return;
+
+      const content = input.value.trim();
+      if (!content) {
+        alert('Escreva uma mensagem!');
+        return;
+      }
+
+      // Extract title from first line or use generic title
+      const lines = content.split('\n');
+      const title = lines[0].substring(0, 60); // First 60 chars as title
+
+      try {
+        const response = await fetch('/api/notices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title || 'Novo Aviso',
+            content,
+            email: currentUser.email,
+            name: currentUser.name
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.error);
+          return;
+        }
+
+        input.value = '';
+        loadNotices();
+      } catch (error) {
+        alert('Erro ao publicar: ' + error.message);
+      }
+    }
+
+    function clearNoticeComposer() {
+      const input = document.getElementById('noticeComposerInput');
+      if (input) input.value = '';
     }
 
     function updateUserProfile() {
