@@ -9,7 +9,14 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-  cors: { origin: '*' }
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: false
+  },
+  transports: ['websocket', 'polling'],
+  pingInterval: 25000,
+  pingTimeout: 60000
 });
 
 // Aumentar limite de payload para imagens
