@@ -1411,18 +1411,13 @@
 
       <div class="checkin-form">
         <div class="checkin-form-group">
-          <label class="checkin-form-label">Como você está?</label>
+          <label class="checkin-form-label">Qual é seu status?</label>
           <div class="checkin-status-options">
             <div class="status-option selected" data-status="Trabalhando" onclick="selectCheckinStatus(this, 'Trabalhando')">💼 Trabalhando</div>
             <div class="status-option" data-status="Focado" onclick="selectCheckinStatus(this, 'Focado')">🎯 Focado</div>
             <div class="status-option" data-status="Reunião" onclick="selectCheckinStatus(this, 'Reunião')">📞 Reunião</div>
             <div class="status-option" data-status="Brainstorm" onclick="selectCheckinStatus(this, 'Brainstorm')">💡 Brainstorm</div>
           </div>
-        </div>
-
-        <div class="checkin-form-group">
-          <label class="checkin-form-label">Status do Dia (opcional)</label>
-          <textarea id="checkinStatus" placeholder="Ex: Hoje focado em fechamentos de balanço"></textarea>
         </div>
       </div>
 
@@ -1595,6 +1590,7 @@
     const confirmCheckinBtn = document.getElementById('confirmCheckinBtn');
     const cancelCheckoutBtn = document.getElementById('cancelCheckoutBtn');
     const confirmCheckoutBtn = document.getElementById('confirmCheckoutBtn');
+    const checkinStatus = null; // Removed - no longer needed
 
     // Toggle Auth
     toggleAuthBtn.addEventListener('click', (e) => {
@@ -1749,84 +1745,69 @@
     }
 
     function displayNotices() {
-      // Rebuild entire notices view with new professional design
       const unreadCount = notices.filter(n => !n.readBy.includes(currentUser.email)).length;
 
       let html = `
         <div class="notices-container">
-          <!-- HEADER -->
-          <div class="notices-header">
-            <div class="notices-header-title">
-              <span class="notices-header-icon">📢</span>
-              <div>
-                <h1>#avisos</h1>
-                <p class="notices-header-subtitle">🔔 COMUNICADOS, RECADOS E INFORMAÇÕES DA EMPRESA</p>
-              </div>
-            </div>
-            <p class="notices-header-description">
-              Compartilhe comunicados e atualizações sobre notícias da empresa, eventos futuros ou colegas de equipe que merecem parabéns.
-              <span style="float: right; color: #667eea; cursor: pointer;">⭐</span>
-            </p>
+          <!-- CLEAN HEADER -->
+          <div style="padding: 30px 40px; background: white; border-bottom: 1px solid #ecf0f1;">
+            <h1 style="color: #2c3e50; font-size: 28px; margin: 0; margin-bottom: 8px;">📢 Avisos</h1>
+            <p style="color: #7f8c8d; margin: 0; font-size: 14px;">Comunicados e informações importantes da empresa</p>
           </div>
 
           <!-- CONTENT -->
-          <div class="notices-content">
-            <!-- WELCOME MESSAGE -->
-            <div class="notices-welcome">
-              <div class="notices-welcome-title">Todos estão aqui no canal #avisos</div>
-              <p class="notices-welcome-text">
-                Compartilhe comunicados e atualizações sobre notícias da empresa, eventos futuros ou colegas de equipe que merecem parabéns.
-              </p>
-            </div>
+          <div style="flex: 1; overflow-y: auto; padding: 30px 40px;">
+            ${notices.length === 0 ? `
+              <div style="text-align: center; padding: 80px 40px; color: #95a5a6;">
+                <div style="font-size: 48px; margin-bottom: 15px;">📭</div>
+                <p style="font-size: 16px; margin: 0;">Nenhum aviso ainda</p>
+                <p style="font-size: 13px; margin-top: 8px;">Os avisos aparecerão aqui quando forem publicados</p>
+              </div>
+            ` : `
+              ${notices.map(notice => {
+                const isUnread = !notice.readBy.includes(currentUser.email);
+                const createdDate = new Date(notice.createdAt);
+                const time = createdDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const date = createdDate.toLocaleDateString('pt-BR');
 
-            <!-- NOTICES MESSAGES -->
-            ${notices.map(notice => {
-              const isUnread = !notice.readBy.includes(currentUser.email);
-              const createdDate = new Date(notice.createdAt);
-              const time = createdDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-              const date = createdDate.toLocaleDateString('pt-BR');
-              const readCount = notice.readBy.length;
-
-              return `
-                <div class="notice-message">
-                  <div class="notice-message-header">
-                    <img src="https://i.pravatar.cc/150?u=${notice.email}" alt="Avatar" class="notice-avatar" />
-                    <div class="notice-message-info">
-                      <div class="notice-message-author">${notice.createdBy}</div>
-                      <div class="notice-message-meta">
-                        <span class="notice-message-time">${time}</span>
-                        <span>${date}</span>
-                        <span class="notice-message-status">✅ Lido por ${readCount}</span>
+                return `
+                  <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; border-left: 4px solid #667eea; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)'">
+                    <!-- HEADER -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                      <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin: 0; font-size: 16px; font-weight: 700;">${notice.title}</h3>
+                        <div style="display: flex; gap: 20px; margin-top: 8px; font-size: 12px; color: #95a5a6;">
+                          <span>📝 ${notice.createdBy}</span>
+                          <span>🕐 ${time}</span>
+                          <span>📅 ${date}</span>
+                        </div>
                       </div>
+                      ${isUnread ? '<span style="background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap;">NÃO LIDO</span>' : '<span style="background: #27ae60; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">✅ LIDO</span>'}
+                    </div>
+
+                    <!-- CONTENT -->
+                    <p style="color: #2c3e50; margin: 12px 0; line-height: 1.6; white-space: pre-wrap; word-break: break-word;">${notice.content}</p>
+
+                    <!-- FOOTER -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #ecf0f1; margin-top: 12px; font-size: 12px; color: #7f8c8d;">
+                      <span>✅ Lido por ${notice.readBy.length} ${notice.readBy.length === 1 ? 'pessoa' : 'pessoas'}</span>
+                      <button onclick="openNoticeDetail('${notice.id}')" style="background: none; border: none; color: #667eea; cursor: pointer; font-weight: 600; padding: 0; font-size: 12px;">Ver Detalhes →</button>
                     </div>
                   </div>
-                  <div>
-                    <div style="margin-left: 55px; margin-bottom: 10px; font-weight: 700; color: #2c3e50; font-size: 15px;">
-                      ${notice.title}
-                    </div>
-                    <div class="notice-message-content">${notice.content}</div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
+                `;
+              }).join('')}
+            `}
           </div>
 
           <!-- COMPOSER (only if admin) -->
           ${currentUser.role === 'admin' ? `
-            <div class="notices-composer">
-              <div class="composer-header">Enviar mensagem para #avisos</div>
-              <div class="composer-area">
-                <div class="composer-toolbar">
-                  <button type="button" title="Negrito"><strong>B</strong></button>
-                  <button type="button" title="Itálico"><em>I</em></button>
-                  <button type="button" title="Underline"><u>U</u></button>
-                  <button type="button" title="Link">🔗</button>
-                  <button type="button" title="Código">&lt;/&gt;</button>
-                </div>
-                <textarea id="noticeComposerInput" class="composer-input" placeholder="Escreva um novo aviso aqui..." spellcheck="true"></textarea>
-                <div class="composer-footer">
-                  <button type="button" class="composer-btn composer-btn-cancel" onclick="clearNoticeComposer()">Cancelar</button>
-                  <button type="button" class="composer-btn composer-btn-send" onclick="publishNotice()">Publicar Aviso</button>
+            <div style="padding: 20px 40px; border-top: 1px solid #ecf0f1; background: #f8f9fa;">
+              <label style="font-weight: 600; color: #2c3e50; font-size: 12px; display: block; margin-bottom: 10px; text-transform: uppercase;">Novo Aviso</label>
+              <div style="background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                <textarea id="noticeComposerInput" style="width: 100%; padding: 15px; border: none; resize: none; font-family: inherit; font-size: 14px; min-height: 80px;" placeholder="Escreva o aviso aqui..."></textarea>
+                <div style="padding: 10px 15px; border-top: 1px solid #ecf0f1; background: #f8f9fa; display: flex; justify-content: flex-end; gap: 10px;">
+                  <button type="button" onclick="clearNoticeComposer()" style="padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; color: #2c3e50;">Cancelar</button>
+                  <button type="button" onclick="publishNotice()" style="padding: 8px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">Publicar Aviso</button>
                 </div>
               </div>
             </div>
@@ -2070,7 +2051,7 @@
           body: JSON.stringify({
             email: currentUser.email,
             name: currentUser.name,
-            status: checkinStatus.value || selectedCheckinStatus
+            status: selectedCheckinStatus
           })
         });
 
