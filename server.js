@@ -15,7 +15,6 @@ const io = socketIo(server, {
 // Aumentar limite de payload para imagens
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Dados em memória
 let users = new Map();
@@ -403,6 +402,9 @@ io.on('connection', (socket) => {
     }
   });
 });
+
+// ===== SERVE STATIC FILES (AFTER ALL API ROUTES) =====
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ===== START SERVER =====
 
