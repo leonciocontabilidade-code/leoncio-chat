@@ -806,7 +806,14 @@
 
       updateUserProfile();
 
-      socket = io();
+      socket = io({
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
+        transports: ['websocket', 'polling'],
+        upgrade: true
+      });
       socket.on('connect', () => {
         socket.emit('user_join', currentUser);
       });

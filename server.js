@@ -15,8 +15,15 @@ const io = socketIo(server, {
     credentials: false
   },
   transports: ['websocket', 'polling'],
-  pingInterval: 25000,
-  pingTimeout: 60000
+  pingInterval: 10000,
+  pingTimeout: 15000,
+  upgradeTimeout: 10000,
+  maxHttpBufferSize: 1e6,
+  allowEIO3: true,
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: 5
 });
 
 // Aumentar limite de payload para imagens
