@@ -240,6 +240,10 @@ app.post('/api/notices', (req, res) => {
   };
 
   notices.push(notice);
+
+  // Emit real-time notification to all connected users
+  io.emit('new_notice', notice);
+
   res.json(notice);
 });
 

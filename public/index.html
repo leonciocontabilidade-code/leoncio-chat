@@ -811,6 +811,15 @@
 
       <!-- MAIN CONTENT -->
       <div class="main-content">
+        <!-- NOTICE ALERT BANNER -->
+        <div id="noticeAlertBanner" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-bottom: 2px solid #5568d3; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+          <div style="flex: 1;">
+            <strong>📢 Novo Aviso:</strong> <span id="noticeAlertTitle"></span>
+          </div>
+          <button onclick="switchToNotices()" style="background: white; color: #667eea; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap;">Ver Aviso</button>
+          <button onclick="closeNoticeAlert()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 16px;">✕</button>
+        </div>
+
         <div class="chat-header">
           <div class="chat-header-left">
             <h2 id="currentChannel">#geral</h2>
@@ -1041,6 +1050,8 @@
     const noticeDetailContent = document.getElementById('noticeDetailContent');
     const noticeReadList = document.getElementById('noticeReadList');
     const closeNoticeBtn = document.getElementById('closeNoticeBtn');
+    const noticeAlertBanner = document.getElementById('noticeAlertBanner');
+    const noticeAlertTitle = document.getElementById('noticeAlertTitle');
 
     // Toggle Auth
     toggleAuthBtn.addEventListener('click', (e) => {
@@ -1129,6 +1140,12 @@
         showTypingIndicator(data.name);
       });
 
+      // Listen for new notices
+      socket.on('new_notice', (notice) => {
+        loadNotices();
+        showNoticeAlert(notice);
+      });
+
       loadChannels();
       loadMessages();
       loadNotices();
@@ -1183,6 +1200,7 @@
           </div>
         `;
       }).join('');
+      updateNoticeTabBadge();
     }
 
     function openNoticeDetail(noticeId) {
@@ -1267,6 +1285,38 @@
     closeNoticeBtn.addEventListener('click', () => {
       noticeDetailModal.classList.remove('active');
     });
+
+    // Show notice alert banner
+    function showNoticeAlert(notice) {
+      if (currentUser.email === notice.email) return; // Don't show alert to creator
+
+      noticeAlertTitle.textContent = notice.title;
+      noticeAlertBanner.style.display = 'flex';
+
+      // Auto-hide after 10 seconds if user doesn't interact
+      setTimeout(() => {
+        closeNoticeAlert();
+      }, 10000);
+    }
+
+    function closeNoticeAlert() {
+      noticeAlertBanner.style.display = 'none';
+    }
+
+    function switchToNotices() {
+      switchView('notices');
+      closeNoticeAlert();
+    }
+
+    // Update notice tab badge
+    function updateNoticeTabBadge() {
+      const unreadCount = notices.filter(n => !n.readBy.includes(currentUser.email)).length;
+      if (unreadCount > 0) {
+        noticeTabBtn.textContent = `📢 Avisos (${unreadCount})`;
+      } else {
+        noticeTabBtn.textContent = '📢 Avisos';
+      }
+    }
 
     function updateUserProfile() {
       userName.textContent = currentUser.name;
