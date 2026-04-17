@@ -887,15 +887,25 @@
     }
 
     function displayMessage(message) {
+      if (message.deleted) return; // Não exibir mensagens deletadas
+
       const messageEl = document.createElement('div');
       messageEl.className = 'message';
+      messageEl.id = `msg-${message.id}`;
       const time = new Date(message.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      // Botão delete só para admin
+      const deleteBtn = currentUser && currentUser.role === 'admin' ? `
+        <button class="delete-msg-btn" data-id="${message.id}" title="Apagar mensagem">🗑️</button>
+      ` : '';
+
       messageEl.innerHTML = `
         <img src="${message.avatar}" alt="Avatar" class="message-avatar" />
         <div class="message-body">
           <div class="message-header">
             <span class="message-author">${message.name}</span>
             <span class="message-time">${time}</span>
+            ${deleteBtn}
           </div>
           <div class="message-text">${message.text}</div>
         </div>
@@ -926,6 +936,44 @@
     // Typing indicator
     messageInput.addEventListener('input', () => {
       socket.emit('typing', { channel: currentChannel, name: currentUser.name });
+    });
+
+    // Delete Message (Admin only)
+    messagesArea.addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('delete-msg-btn')) return;
+
+      const messageId = e.target.dataset.id;
+      const password = prompt('Digite sua senha de admin para confirmar a exclusão:');
+
+      if (!password) return;
+
+      try {
+        const response = await fetch(`/api/messages/${messageId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentUser.email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert('Erro: ' + data.error);
+          return;
+        }
+
+        // Remove a mensagem da tela
+        const messageEl = document.getElementById(`msg-${messageId}`);
+        if (messageEl) messageEl.remove();
+        alert('Mensagem removida com sucesso');
+      } catch (error) {
+        alert('Erro ao remover mensagem: ' + error.message);
+      }
+    });
+
+    // Listen for remote message deletions
+    socket.on('message_deleted', (data) => {
+      const messageEl = document.getElementById(`msg-${data.id}`);
+      if (messageEl) messageEl.remove();
     });
 
     function showTypingIndicator(name) {

@@ -4,7 +4,37 @@ const socketIo = require('socket.io');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 require('dotenv').config();
+
+// Message persistence
+const messagesFile = path.join(__dirname, 'data', 'messages.json');
+const ensureDataDir = () => {
+  const dataDir = path.join(__dirname, 'data');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+};
+const loadMessages = () => {
+  try {
+    ensureDataDir();
+    if (fs.existsSync(messagesFile)) {
+      const data = fs.readFileSync(messagesFile, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Erro ao carregar mensagens:', err.message);
+  }
+  return [];
+};
+const saveMessages = () => {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(messagesFile, JSON.stringify(messages, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Erro ao salvar mensagens:', err.message);
+  }
+};
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +62,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Dados em memória
 let users = new Map();
-let messages = [];
+let messages = loadMessages(); // Carregar mensagens salvas
 let channels = new Map();
 let connectedUsers = new Map();
 let notices = []; // Mural de Avisos
@@ -229,6 +259,40 @@ app.get('/api/messages/:channel', (req, res) => {
   res.json(channelMessages);
 });
 
+// ===== DELETE MESSAGE (ADMIN ONLY) =====
+
+app.delete('/api/messages/:id', (req, res) => {
+  const { id } = req.params;
+  const { email, password } = req.body;
+
+  // Verificar se é admin
+  const user = users.get(email);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Apenas administradores podem deletar mensagens' });
+  }
+
+  // Verificar senha
+  if (!bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ error: 'Senha incorreta' });
+  }
+
+  // Encontrar e marcar mensagem como deletada (soft delete)
+  const message = messages.find(m => m.id === id);
+  if (!message) {
+    return res.status(404).json({ error: 'Mensagem não encontrada' });
+  }
+
+  message.deleted = true;
+  message.deletedBy = user.name || email;
+  message.deletedAt = new Date();
+  saveMessages();
+
+  // Notificar todos os clientes
+  io.emit('message_deleted', { id, deletedBy: user.name || email });
+
+  res.json({ success: true, message: 'Mensagem removida com sucesso' });
+});
+
 // ===== MURAL DE AVISOS =====
 
 app.post('/api/notices', (req, res) => {
@@ -397,6 +461,7 @@ io.on('connection', (socket) => {
     };
 
     messages.push(message);
+    saveMessages(); // Persistir mensagem
     io.to(channel).emit('new_message', message);
   });
 
