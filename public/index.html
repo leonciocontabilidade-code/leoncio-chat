@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contábil Chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #f0f2f5;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===== AUTH PAGE ===== */
+    .auth-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .auth-container {
+      background: white;
+      padding: 50px;
+      border-radius: 15px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-header h1 {
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .auth-header p {
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .auth-toggle {
+      text-align: center;
+      margin-top: 20px;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+
+    .auth-toggle button {
+      background: none;
+      color: #667eea;
+      padding: 0;
+      width: auto;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+    }
+
+    .auth-toggle button:hover {
+      text-decoration: underline;
+    }
+
+    .auth-error {
+      padding: 12px;
+      background: #ffe6e6;
+      color: #c00;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* ===== CHAT PAGE ===== */
+    .chat-page {
+      display: none;
+      height: 100vh;
+      flex: 1;
+    }
+
+    .chat-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 280px;
+      background: #1a1d29;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #2a2d3a;
+      overflow: hidden;
+    }
+
+    .user-profile {
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .user-profile:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 3px solid white;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .user-email {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .user-contact {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .channels-label {
+      padding: 15px 20px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #7f8c8d;
+      letter-spacing: 1px;
+    }
+
+    .channels {
+      flex: 1;
+      overflow-y: auto;
+      padding: 5px 0;
+    }
+
+    .channel {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #bdc3c7;
+      font-size: 14px;
+      border-left: 3px solid transparent;
+    }
+
+    .channel:hover {
+      background: #2a2d3a;
+      color: white;
+    }
+
+    .channel.active {
+      background: #667eea;
+      color: white;
+      border-left-color: white;
+    }
+
+    .sidebar-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #2a2d3a;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      flex: 1;
+      padding: 10px;
+      background: #2a2d3a;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: #3a3d4a;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid #ecf0f1;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header-left h2 {
+      color: #2c3e50;
+      font-size: 20px;
+    }
+
+    .chat-header-right {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+
+    .online-badge {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #27ae60;
+      margin-right: 6px;
+    }
+
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px;
+      background: white;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      animation: slideIn 0.3s ease-out;
+      display: flex;
+      gap: 12px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .message-avatar:hover {
+      transform: scale(1.1);
+    }
+
+    .message-body {
+      flex: 1;
+    }
+
+    .message-header {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .message-contact {
+      font-size: 11px;
+      color: #667eea;
+      cursor: pointer;
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: #95a5a6;
+      font-weight: normal;
+    }
+
+    .message-text {
+      color: #2c3e50;
+      line-height: 1.5;
+      word-break: break-word;
+      font-size: 14px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .typing-text {
+      color: #95a5a6;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #bdc3c7;
+      animation: bounce 1.4s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(1); }
+      40% { transform: scale(1.3); }
+    }
+
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid #ecf0f1;
+      display: flex;
+      gap: 10px;
+      background: #f8f9fa;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .input-area input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .send-btn {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+
+    .send-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      margin-bottom: 30px;
+    }
+
+    .modal-header h2 {
+      color: #2c3e50;
+      font-size: 22px;
+    }
+
+    .avatar-upload {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid #667eea;
+    }
+
+    .avatar-input {
+      display: none;
+    }
+
+    .avatar-btn {
+      padding: 8px 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .btn-cancel, .btn-save {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: #ecf0f1;
+      color: #2c3e50;
+    }
+
+    .btn-cancel:hover {
+      background: #d5dbdd;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ===== COMPANY PANEL ===== */
+    .company-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-bottom: 1px solid #2a2d3a;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .company-header:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 2px solid white;
+    }
+
+    .company-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .company-cnpj {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .company-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .company-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .company-field label {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 12px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .company-field input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .company-logo-upload {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .company-logo-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 2px solid #667eea;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      background: #f39c12;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .auth-container {
+        padding: 30px;
+      }
+
+      .modal-content {
+        padding: 30px;
+      }
+
+      .messages-area {
+        padding: 15px;
+      }
+
+      .input-area {
+        padding: 15px;
+      }
+
+      .company-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- AUTH PAGE -->
+  <div id="authPage" class="auth-page">
+    <div class="auth-container">
+      <div class="auth-header">
+        <h1 id="authTitle">Bem-vindo</h1>
+        <p>Chat para sua equipe contábil</p>
+      </div>
+
+      <div id="authError" class="auth-error" style="display: none;"></div>
+
+      <form id="authForm">
+        <div class="form-group" id="nameGroupContainer" style="display: none;">
+          <label>Nome</label>
+          <input type="text" id="nameInput" placeholder="Seu nome" />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="emailInput" placeholder="seu@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="passwordInput" placeholder="Sua senha" required />
+        </div>
+
+        <button type="submit" class="auth-btn" id="authBtn">Entrar</button>
+      </form>
+
+      <div class="auth-toggle">
+        <span id="toggleText">Não tem conta? </span>
+        <button type="button" id="toggleAuthBtn">Criar conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT PAGE -->
+  <div id="chatPage" class="chat-page">
+    <div class="chat-container">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="company-header" id="companyHeaderBtn">
+          <img id="companyLogoThumb" src="" alt="Logo" class="company-logo" />
+          <div class="company-name" id="companyNameThumb">Sua Empresa</div>
+          <div class="company-cnpj" id="companyCnpjThumb">00.000.000/0000-00</div>
+        </div>
+
+        <div class="user-profile" id="userProfileBtn">
+          <img id="userAvatarThumb" src="" alt="Avatar" class="user-avatar" />
+          <div class="user-name" id="userName"></div>
+          <div class="user-email" id="userEmail"></div>
+          <div class="user-contact" id="userContact"></div>
+          <small style="color: rgba(255,255,255,0.6);">Clique para editar</small>
+        </div>
+
+        <div class="channels-label">Canais</div>
+        <div class="channels" id="channelsList"></div>
+
+        <div class="sidebar-footer">
+          <button class="btn-icon" id="editProfileBtn">⚙️ Perfil</button>
+          <button class="btn-icon" id="logoutBtn">🚪 Sair</button>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <h2 id="currentChannel">#geral</h2>
+          </div>
+          <div class="chat-header-right">
+            <span class="online-badge"></span>
+            <span id="userCount">Carregando...</span>
+          </div>
+        </div>
+
+        <div class="messages-area" id="messagesArea"></div>
+
+        <div class="input-area">
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="Escreva uma mensagem..."
+            autocomplete="off"
+          />
+          <button class="send-btn" id="sendBtn">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar Perfil</h2>
+      </div>
+
+      <div class="avatar-upload">
+        <img id="avatarPreview" src="" alt="Avatar" class="avatar-preview" />
+        <input type="file" id="avatarInput" class="avatar-input" accept="image/*" />
+        <button type="button" class="avatar-btn" id="uploadAvatarBtn">Escolher Foto</button>
+      </div>
+
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="editName" placeholder="Seu nome" />
+      </div>
+
+      <div class="form-group">
+        <label>Contato (Telefone/WhatsApp)</label>
+        <input type="text" id="editContact" placeholder="+55 11 99999-9999" />
+      </div>
+
+      <div class="form-group">
+        <label>Bio</label>
+        <input type="text" id="editBio" placeholder="Seu cargo ou bio" />
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" id="cancelProfileBtn">Cancelar</button>
+        <button type="button" class="btn-save" id="saveProfileBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPANY MODAL -->
+  <div id="companyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Dados da Empresa</h2>
+        <span id="adminBadge" class="admin-badge" style="display: none;">👨‍💼 ADMIN</span>
+      </div>
+
+      <div class="company-logo-upload">
+        <img id="companyLogoPreview" src="" alt="Logo" class="company-logo-preview" />
+      </div>
+
+      <div class="form-group">
+        <label>URL da Logo (Cole o link da imagem)</label>
+        <input type="text" id="editCompanyLogoUrl" placeholder="https://exemplo.com/logo.png" />
+        <small style="color: #7f8c8d; margin-top: 5px; display: block;">Cole o link de uma imagem (PNG, JPG, etc)</small>
+      </div>
+
+      <div class="company-info-grid">
+        <div class="company-field">
+          <label>Nome da Empresa</label>
+          <input type="text" id="editCompanyName" placeholder="Nome da empresa" />
+        </div>
+
+        <div class="company-field">
+          <label>CNPJ</label>
+          <input type="text" id="editCompanyCnpj" placeholder="00.000.000/0000-00" />
+        </div>
+
+        <div class="company-field" style="grid-column: 1 / -1;">
+          <label>Endereço</label>
+          <input type="text" id="editCompanyAddress" placeholder="Rua, número, bairro, cidade" />
+        </div>
+
+        <div class="company-field">
+          <label>Telefone</label>
+          <input type="text" id="editCompanyPhone" placeholder="(11) 0000-0000" />
+        </div>
+
+        <div class="company-field">
+          <label>Email</label>
+          <input type="email" id="editCompanyEmail" placeholder="contato@empresa.com.br" />
+        </div>
+
+        <div class="company-field" style="grid-column: 1 / -1;">
+          <label>Website</label>
+          <input type="text" id="editCompanyWebsite" placeholder="www.empresa.com.br" />
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" id="cancelCompanyBtn">Fechar</button>
+        <button type="button" class="btn-save" id="saveCompanyBtn" style="display: none;">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Estado
+    let currentUser = null;
+    let currentChannel = 'geral';
+    let isRegistering = false;
+    let socket = null;
+    let typingTimeout;
+
+    // DOM Elements
+    const authPage = document.getElementById('authPage');
+    const chatPage = document.getElementById('chatPage');
+    const authForm = document.getElementById('authForm');
+    const authBtn = document.getElementById('authBtn');
+    const toggleAuthBtn = document.getElementById('toggleAuthBtn');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const nameInput = document.getElementById('nameInput');
+    const nameGroupContainer = document.getElementById('nameGroupContainer');
+    const authTitle = document.getElementById('authTitle');
+    const toggleText = document.getElementById('toggleText');
+    const authError = document.getElementById('authError');
+
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const messagesArea = document.getElementById('messagesArea');
+    const channelsList = document.getElementById('channelsList');
+    const currentChannelDisplay = document.getElementById('currentChannel');
+    const userCount = document.getElementById('userCount');
+
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userContact = document.getElementById('userContact');
+    const userAvatarThumb = document.getElementById('userAvatarThumb');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const profileModal = document.getElementById('profileModal');
+    const editName = document.getElementById('editName');
+    const editContact = document.getElementById('editContact');
+    const editBio = document.getElementById('editBio');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarInput = document.getElementById('avatarInput');
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+
+    // Toggle Auth
+    toggleAuthBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      isRegistering = !isRegistering;
+      if (isRegistering) {
+        authTitle.textContent = 'Criar Conta';
+        toggleText.textContent = 'Já tem conta? ';
+        toggleAuthBtn.textContent = 'Fazer Login';
+        authBtn.textContent = 'Registrar';
+        nameGroupContainer.style.display = 'block';
+        nameInput.required = true;
+      } else {
+        authTitle.textContent = 'Bem-vindo';
+        toggleText.textContent = 'Não tem conta? ';
+        toggleAuthBtn.textContent = 'Criar conta';
+        authBtn.textContent = 'Entrar';
+        nameGroupContainer.style.display = 'none';
+        nameInput.required = false;
+      }
+      authError.style.display = 'none';
+    });
+
+    // Auth Form
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      const name = nameInput.value;
+
+      try {
+        const endpoint = isRegistering ? '/api/register' : '/api/login';
+        const body = { email, password };
+        if (isRegistering) body.name = name;
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          authError.textContent = data.error;
+          authError.style.display = 'block';
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        currentUser = data.user;
+        initializeChat();
+      } catch (error) {
+        authError.textContent = 'Erro: ' + error.message;
+        authError.style.display = 'block';
+      }
+    });
+
+    // Initialize Chat
+    async function initializeChat() {
+      authPage.style.display = 'none';
+      chatPage.style.display = 'flex';
+
+      updateUserProfile();
+
+      socket = io();
+      socket.on('connect', () => {
+        socket.emit('user_join', currentUser);
+      });
+
+      socket.on('user_connected', (data) => {
+        userCount.textContent = `${data.count} usuários online`;
+      });
+
+      socket.on('user_disconnected', (data) => {
+        userCount.textContent = `${data.count} usuários online`;
+      });
+
+      socket.on('new_message', (message) => {
+        if (message.channel === currentChannel) {
+          displayMessage(message);
+        }
+      });
+
+      socket.on('user_typing', (data) => {
+        showTypingIndicator(data.name);
+      });
+
+      loadChannels();
+      loadMessages();
+    }
+
+    function updateUserProfile() {
+      userName.textContent = currentUser.name;
+      userEmail.textContent = currentUser.email;
+      userContact.textContent = currentUser.contact || 'Sem contato';
+      userAvatarThumb.src = currentUser.avatar;
+      avatarPreview.src = currentUser.avatar;
+    }
+
+    // Load Channels
+    async function loadChannels() {
+      try {
+        const response = await fetch('/api/channels');
+        const channels = await response.json();
+
+        channelsList.innerHTML = channels
+          .map((ch) => `
+            <div class="channel ${ch.name === currentChannel ? 'active' : ''}"
+                 onclick="switchChannel('${ch.name}')">
+              # ${ch.name}
+            </div>
+          `)
+          .join('');
+      } catch (error) {
+        console.error('Erro ao carregar canais:', error);
+      }
+    }
+
+    function switchChannel(channel) {
+      currentChannel = channel;
+      currentChannelDisplay.textContent = `#${channel}`;
+
+      document.querySelectorAll('.channel').forEach((ch) => {
+        ch.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      messagesArea.innerHTML = '';
+      loadMessages();
+      socket.emit('join_channel', channel);
+    }
+
+    // Load Messages
+    async function loadMessages() {
+      try {
+        const response = await fetch(`/api/messages/${currentChannel}`);
+        const allMessages = await response.json();
+
+        messagesArea.innerHTML = '';
+        allMessages.forEach((msg) => displayMessage(msg));
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+      } catch (error) {
+        console.error('Erro ao carregar mensagens:', error);
+      }
+    }
+
+    // Display Message
+    function displayMessage(message) {
+      const messageEl = document.createElement('div');
+      messageEl.className = 'message';
+      const time = new Date(message.timestamp).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const contactHTML = message.contact ? `<span class="message-contact">${escapeHtml(message.contact)}</span>` : '';
+
+      messageEl.innerHTML = `
+        <img src="${message.avatar}" alt="${message.name}" class="message-avatar" />
+        <div class="message-body">
+          <div class="message-header">
+            <span>${escapeHtml(message.name)}</span>
+            ${contactHTML}
+            <span class="message-time">${time}</span>
+          </div>
+          <div class="message-text">${escapeHtml(message.text)}</div>
+        </div>
+      `;
+
+      messagesArea.appendChild(messageEl);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    function showTypingIndicator(name) {
+      const exists = document.querySelector('.typing-indicator');
+      if (!exists) {
+        const typingEl = document.createElement('div');
+        typingEl.className = 'typing-indicator';
+        typingEl.innerHTML = `
+          <span class="typing-text">${escapeHtml(name)} está digitando</span>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        `;
+        messagesArea.appendChild(typingEl);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+
+        setTimeout(() => typingEl.remove(), 3000);
+      }
+    }
+
+    // Send Message
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    messageInput.addEventListener('input', () => {
+      clearTimeout(typingTimeout);
+      socket.emit('typing', { channel: currentChannel, name: currentUser.name });
+      typingTimeout = setTimeout(() => {}, 2000);
+    });
+
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      socket.emit('send_message', {
+        text,
+        channel: currentChannel,
+        email: currentUser.email,
+        name: currentUser.name,
+        contact: currentUser.contact
+      });
+
+      messageInput.value = '';
+    }
+
+    // Profile Modal
+    userProfileBtn.addEventListener('click', openProfileModal);
+    editProfileBtn.addEventListener('click', openProfileModal);
+    cancelProfileBtn.addEventListener('click', closeProfileModal);
+    uploadAvatarBtn.addEventListener('click', () => avatarInput.click());
+    saveProfileBtn.addEventListener('click', saveProfile);
+
+    function openProfileModal() {
+      editName.value = currentUser.name;
+      editContact.value = currentUser.contact || '';
+      editBio.value = currentUser.bio || '';
+      profileModal.classList.add('active');
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.remove('active');
+    }
+
+    avatarInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          avatarPreview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    async function saveProfile() {
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentUser.email,
+            name: editName.value,
+            contact: editContact.value,
+            bio: editBio.value,
+            avatar: avatarPreview.src
+          })
+        });
+
+        if (!response.ok) {
+          alert('Erro ao salvar perfil');
+          return;
+        }
+
+        const data = await response.json();
+        currentUser = { ...currentUser, ...data.user };
+        updateUserProfile();
+        closeProfileModal();
+      } catch (error) {
+        alert('Erro: ' + error.message);
+      }
+    }
+
+    // ===== COMPANY MODAL =====
+    const companyModal = document.getElementById('companyModal');
+    const companyHeaderBtn = document.getElementById('companyHeaderBtn');
+    const companyLogoThumb = document.getElementById('companyLogoThumb');
+    const companyNameThumb = document.getElementById('companyNameThumb');
+    const companyCnpjThumb = document.getElementById('companyCnpjThumb');
+    const editCompanyName = document.getElementById('editCompanyName');
+    const editCompanyCnpj = document.getElementById('editCompanyCnpj');
+    const editCompanyAddress = document.getElementById('editCompanyAddress');
+    const editCompanyPhone = document.getElementById('editCompanyPhone');
+    const editCompanyEmail = document.getElementById('editCompanyEmail');
+    const editCompanyWebsite = document.getElementById('editCompanyWebsite');
+    const editCompanyLogoUrl = document.getElementById('editCompanyLogoUrl');
+    const companyLogoPreview = document.getElementById('companyLogoPreview');
+    const cancelCompanyBtn = document.getElementById('cancelCompanyBtn');
+    const saveCompanyBtn = document.getElementById('saveCompanyBtn');
+    const adminBadge = document.getElementById('adminBadge');
+    let companyData = {};
+
+    // Load company data
+    async function loadCompanyData() {
+      try {
+        const response = await fetch('/api/company');
+        const data = await response.json();
+        companyData = data.company;
+        updateCompanyDisplay();
+      } catch (error) {
+        console.error('Erro ao carregar dados da empresa:', error);
+      }
+    }
+
+    function updateCompanyDisplay() {
+      companyLogoThumb.src = companyData.logo;
+      companyNameThumb.textContent = companyData.name;
+      companyCnpjThumb.textContent = companyData.cnpj;
+    }
+
+    function openCompanyModal() {
+      editCompanyName.value = companyData.name;
+      editCompanyCnpj.value = companyData.cnpj;
+      editCompanyAddress.value = companyData.address;
+      editCompanyPhone.value = companyData.phone;
+      editCompanyEmail.value = companyData.email;
+      editCompanyWebsite.value = companyData.website;
+      editCompanyLogoUrl.value = companyData.logo;
+      companyLogoPreview.src = companyData.logo;
+
+      // Mostrar save button apenas para admin
+      if (currentUser.role === 'admin') {
+        saveCompanyBtn.style.display = 'block';
+        adminBadge.style.display = 'inline-block';
+        editCompanyName.disabled = false;
+        editCompanyCnpj.disabled = false;
+        editCompanyAddress.disabled = false;
+        editCompanyPhone.disabled = false;
+        editCompanyEmail.disabled = false;
+        editCompanyWebsite.disabled = false;
+        editCompanyLogoUrl.disabled = false;
+      } else {
+        saveCompanyBtn.style.display = 'none';
+        adminBadge.style.display = 'none';
+        editCompanyName.disabled = true;
+        editCompanyCnpj.disabled = true;
+        editCompanyAddress.disabled = true;
+        editCompanyPhone.disabled = true;
+        editCompanyEmail.disabled = true;
+        editCompanyWebsite.disabled = true;
+        editCompanyLogoUrl.disabled = true;
+      }
+
+      companyModal.classList.add('active');
+    }
+
+    function closeCompanyModal() {
+      companyModal.classList.remove('active');
+    }
+
+    companyHeaderBtn.addEventListener('click', openCompanyModal);
+    cancelCompanyBtn.addEventListener('click', closeCompanyModal);
+
+    editCompanyLogoUrl.addEventListener('change', () => {
+      companyLogoPreview.src = editCompanyLogoUrl.value;
+    });
+
+    saveCompanyBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/company', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: editCompanyName.value,
+            cnpj: editCompanyCnpj.value,
+            address: editCompanyAddress.value,
+            phone: editCompanyPhone.value,
+            email: editCompanyEmail.value,
+            website: editCompanyWebsite.value,
+            logo: editCompanyLogoUrl.value
+          })
+        });
+
+        if (!response.ok) {
+          alert('Erro ao salvar dados da empresa');
+          return;
+        }
+
+        const data = await response.json();
+        companyData = data.company;
+        updateCompanyDisplay();
+        closeCompanyModal();
+      } catch (error) {
+        alert('Erro: ' + error.message);
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      if (socket) socket.disconnect();
+      location.reload();
+    });
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Load on page load
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          currentUser = JSON.parse(atob(token.split('.')[1]));
+          loadCompanyData();
+          initializeChat();
+        } catch (error) {
+          localStorage.removeItem('token');
+        }
+      }
+    });
+
+    // Close modal on background click
+    profileModal.addEventListener('click', (e) => {
+      if (e.target === profileModal) {
+        closeProfileModal();
+      }
+    });
+
+    companyModal.addEventListener('click', (e) => {
+      if (e.target === companyModal) {
+        closeCompanyModal();
+      }
+    });
+  </script>
+</body>
+</html>
