@@ -23,6 +23,7 @@ let messages = [];
 let channels = new Map();
 let connectedUsers = new Map();
 let notices = []; // Mural de Avisos
+let teamStatus = new Map(); // Check-in/Check-out Status
 let company = {
   name: 'Sua Empresa',
   cnpj: '00.000.000/0000-00',
@@ -267,6 +268,84 @@ app.put('/api/notices/:id/read', (req, res) => {
   }
 
   res.json(notice);
+});
+
+// ===== CHECK-IN / CHECK-OUT =====
+
+app.post('/api/checkin', (req, res) => {
+  const { email, name, status } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email required' });
+  }
+
+  const checkinData = {
+    email,
+    name,
+    status: status || 'Trabalhando',
+    checkinTime: new Date(),
+    checkoutTime: null,
+    statusType: 'online' // online, pausa, offline
+  };
+
+  teamStatus.set(email, checkinData);
+
+  // Emit real-time update
+  io.emit('team_status_updated', Array.from(teamStatus.values()));
+
+  res.json(checkinData);
+});
+
+app.post('/api/checkout', (req, res) => {
+  const { email, summary } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email required' });
+  }
+
+  const currentStatus = teamStatus.get(email);
+
+  if (!currentStatus) {
+    return res.status(404).json({ error: 'User not checked in' });
+  }
+
+  currentStatus.checkoutTime = new Date();
+  currentStatus.summary = summary;
+  currentStatus.statusType = 'offline';
+
+  teamStatus.set(email, currentStatus);
+
+  // Emit real-time update
+  io.emit('team_status_updated', Array.from(teamStatus.values()));
+
+  res.json(currentStatus);
+});
+
+app.put('/api/user-status/:email', (req, res) => {
+  const { email } = req.params;
+  const { statusType, status } = req.body;
+
+  const currentStatus = teamStatus.get(email);
+
+  if (!currentStatus) {
+    return res.status(404).json({ error: 'User not checked in' });
+  }
+
+  currentStatus.statusType = statusType; // online, pausa, offline
+  currentStatus.status = status || currentStatus.status;
+  currentStatus.lastStatusUpdate = new Date();
+
+  teamStatus.set(email, currentStatus);
+
+  // Emit real-time update
+  io.emit('team_status_updated', Array.from(teamStatus.values()));
+
+  res.json(currentStatus);
+});
+
+app.get('/api/team-status', (req, res) => {
+  const teamStatusList = Array.from(teamStatus.values());
+  res.json(teamStatusList);
 });
 
 // ===== SOCKET.IO =====

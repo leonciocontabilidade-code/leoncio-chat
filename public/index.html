@@ -564,6 +564,238 @@
       transform: none;
     }
 
+    /* ===== TEAM VIEW ===== */
+    .team-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: white;
+    }
+
+    .team-header {
+      padding: 30px 40px;
+      background: white;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .team-header-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .team-header-title h1 {
+      color: #2c3e50;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .team-header-subtitle {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .team-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px;
+    }
+
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border-left: 4px solid #ecf0f1;
+      transition: all 0.2s;
+    }
+
+    .team-member:hover {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-member.online {
+      border-left-color: #27ae60;
+    }
+
+    .team-member.pausa {
+      border-left-color: #f39c12;
+    }
+
+    .team-member.offline {
+      border-left-color: #95a5a6;
+      opacity: 0.7;
+    }
+
+    .team-member-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .team-member-status-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid white;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .team-member-status-badge.online {
+      background: #27ae60;
+    }
+
+    .team-member-status-badge.pausa {
+      background: #f39c12;
+    }
+
+    .team-member-status-badge.offline {
+      background: #95a5a6;
+    }
+
+    .team-member-info {
+      flex: 1;
+    }
+
+    .team-member-name {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .team-member-email {
+      font-size: 12px;
+      color: #95a5a6;
+      margin-bottom: 4px;
+    }
+
+    .team-member-status-text {
+      font-size: 13px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .team-member-time {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 4px;
+    }
+
+    .team-controls {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-badge.online {
+      background: #d5f4e6;
+      color: #27ae60;
+    }
+
+    .status-badge.pausa {
+      background: #ffeaa7;
+      color: #d68910;
+    }
+
+    .status-badge.offline {
+      background: #ecf0f1;
+      color: #7f8c8d;
+    }
+
+    /* ===== CHECK-IN/OUT MODALS ===== */
+    .checkin-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .checkin-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checkin-form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    .checkin-status-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .status-option {
+      padding: 12px;
+      border: 2px solid #ecf0f1;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: white;
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .status-option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .status-option.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .checkin-form textarea {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+      color: #2c3e50;
+    }
+
+    .checkin-form textarea::placeholder {
+      color: #95a5a6;
+    }
+
+    .checkin-form textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
     /* ===== MAIN CONTENT ===== */
     .main-content {
       flex: 1;
@@ -1029,9 +1261,10 @@
           <small style="color: rgba(255,255,255,0.6);">Clique para editar</small>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-          <button id="chatTabBtn" class="sidebar-tab active" onclick="switchView('chat')">💬 Chat</button>
-          <button id="noticeTabBtn" class="sidebar-tab" onclick="switchView('notices')">📢 Avisos</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+          <button id="chatTabBtn" class="sidebar-tab active" onclick="switchView('chat')" style="flex: 1;">💬 Chat</button>
+          <button id="noticeTabBtn" class="sidebar-tab" onclick="switchView('notices')" style="flex: 1;">📢 Avisos</button>
+          <button id="teamTabBtn" class="sidebar-tab" onclick="switchView('team')" style="flex: 1;">👥 Equipe</button>
         </div>
 
         <!-- Chat View -->
@@ -1042,6 +1275,9 @@
 
         <!-- Notices View (will be inserted dynamically) -->
         <div id="noticesView" style="display: none; flex: 1; overflow-y: auto;"></div>
+
+        <!-- Team View (will be inserted dynamically) -->
+        <div id="teamView" style="display: none; flex: 1; overflow-y: auto;"></div>
 
         <div class="sidebar-footer">
           <button class="btn-icon" id="editProfileBtn">⚙️ Perfil</button>
@@ -1166,6 +1402,58 @@
     </div>
   </div>
 
+  <!-- CHECKIN MODAL -->
+  <div id="checkinModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>✅ Check-in</h2>
+      </div>
+
+      <div class="checkin-form">
+        <div class="checkin-form-group">
+          <label class="checkin-form-label">Como você está?</label>
+          <div class="checkin-status-options">
+            <div class="status-option selected" data-status="Trabalhando" onclick="selectCheckinStatus(this, 'Trabalhando')">💼 Trabalhando</div>
+            <div class="status-option" data-status="Focado" onclick="selectCheckinStatus(this, 'Focado')">🎯 Focado</div>
+            <div class="status-option" data-status="Reunião" onclick="selectCheckinStatus(this, 'Reunião')">📞 Reunião</div>
+            <div class="status-option" data-status="Brainstorm" onclick="selectCheckinStatus(this, 'Brainstorm')">💡 Brainstorm</div>
+          </div>
+        </div>
+
+        <div class="checkin-form-group">
+          <label class="checkin-form-label">Status do Dia (opcional)</label>
+          <textarea id="checkinStatus" placeholder="Ex: Hoje focado em fechamentos de balanço"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" id="cancelCheckinBtn">Cancelar</button>
+        <button type="button" class="btn-save" id="confirmCheckinBtn">Iniciar Dia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🚪 Check-out</h2>
+      </div>
+
+      <div class="checkin-form">
+        <div class="checkin-form-group">
+          <label class="checkin-form-label">Resumo do Dia</label>
+          <textarea id="checkoutSummary" placeholder="Ex: ✅ Balancete fechado, 📋 Relatórios enviados ao cliente, ⏳ Pendente: Conciliar banco"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" id="cancelCheckoutBtn">Continuar Trabalhando</button>
+        <button type="button" class="btn-save" id="confirmCheckoutBtn">Finalizar Dia</button>
+      </div>
+    </div>
+  </div>
+
   <!-- COMPANY MODAL -->
   <div id="companyModal" class="modal">
     <div class="modal-content">
@@ -1233,6 +1521,9 @@
     let socket = null;
     let typingTimeout;
     let notices = [];
+    let teamStatus = [];
+    let currentUserStatus = null;
+    let selectedCheckinStatus = 'Trabalhando';
 
     // DOM Elements
     const authPage = document.getElementById('authPage');
@@ -1292,6 +1583,18 @@
     const closeNoticeBtn = document.getElementById('closeNoticeBtn');
     const noticeAlertBanner = document.getElementById('noticeAlertBanner');
     const noticeAlertTitle = document.getElementById('noticeAlertTitle');
+
+    // Team Elements
+    const teamTabBtn = document.getElementById('teamTabBtn');
+    const teamView = document.getElementById('teamView');
+    const checkinModal = document.getElementById('checkinModal');
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkinStatus = document.getElementById('checkinStatus');
+    const checkoutSummary = document.getElementById('checkoutSummary');
+    const cancelCheckinBtn = document.getElementById('cancelCheckinBtn');
+    const confirmCheckinBtn = document.getElementById('confirmCheckinBtn');
+    const cancelCheckoutBtn = document.getElementById('cancelCheckoutBtn');
+    const confirmCheckoutBtn = document.getElementById('confirmCheckoutBtn');
 
     // Toggle Auth
     toggleAuthBtn.addEventListener('click', (e) => {
@@ -1386,9 +1689,18 @@
         showNoticeAlert(notice);
       });
 
+      // Listen for team status updates
+      socket.on('team_status_updated', (status) => {
+        teamStatus = status;
+        if (currentView === 'team') {
+          displayTeamStatus();
+        }
+      });
+
       loadChannels();
       loadMessages();
       loadNotices();
+      loadTeamStatus();
 
       // Show create notice button if admin
       if (currentUser.role === 'admin') {
@@ -1400,17 +1712,29 @@
     function switchView(view) {
       currentView = view;
 
+      // Hide all views
+      chatView.style.display = 'none';
+      noticesView.style.display = 'none';
+      teamView.style.display = 'none';
+
+      // Remove active from all tabs
+      chatTabBtn.classList.remove('active');
+      noticeTabBtn.classList.remove('active');
+      teamTabBtn.classList.remove('active');
+
+      // Show selected view
       if (view === 'chat') {
         chatView.style.display = 'block';
-        noticesView.style.display = 'none';
         chatTabBtn.classList.add('active');
-        noticeTabBtn.classList.remove('active');
-      } else {
-        chatView.style.display = 'none';
+      } else if (view === 'notices') {
         noticesView.style.display = 'flex';
         noticesView.style.flexDirection = 'column';
-        chatTabBtn.classList.remove('active');
         noticeTabBtn.classList.add('active');
+      } else if (view === 'team') {
+        teamView.style.display = 'flex';
+        teamView.style.flexDirection = 'column';
+        teamTabBtn.classList.add('active');
+        loadTeamStatus();
       }
     }
 
@@ -1627,6 +1951,208 @@
       const input = document.getElementById('noticeComposerInput');
       if (input) input.value = '';
     }
+
+    // ===== TEAM STATUS FUNCTIONS =====
+    async function loadTeamStatus() {
+      try {
+        const response = await fetch('/api/team-status');
+        teamStatus = await response.json();
+        currentUserStatus = teamStatus.find(s => s.email === currentUser.email);
+        displayTeamStatus();
+      } catch (error) {
+        console.error('Erro ao carregar status da equipe:', error);
+      }
+    }
+
+    function displayTeamStatus() {
+      const checkedInStatus = teamStatus.filter(s => s.statusType !== 'offline');
+      const offlineStatus = teamStatus.filter(s => s.statusType === 'offline');
+
+      let html = `
+        <div class="team-container">
+          <div class="team-header">
+            <div class="team-header-title">
+              <span>👥</span>
+              <div>
+                <h1>Equipe</h1>
+                <p class="team-header-subtitle">${checkedInStatus.length} ${checkedInStatus.length === 1 ? 'pessoa' : 'pessoas'} online</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="team-content">
+            <!-- ONLINE -->
+            ${checkedInStatus.length > 0 ? `
+              <div style="margin-bottom: 30px;">
+                <div style="font-weight: 700; color: #2c3e50; margin-bottom: 15px; font-size: 12px; text-transform: uppercase;">🟢 Online (${checkedInStatus.length})</div>
+                ${checkedInStatus.map(member => `
+                  <div class="team-member ${member.statusType}">
+                    <div style="position: relative;">
+                      <img src="https://i.pravatar.cc/150?u=${member.email}" alt="Avatar" class="team-member-avatar" />
+                      <div class="team-member-status-badge ${member.statusType}"></div>
+                    </div>
+                    <div class="team-member-info">
+                      <div class="team-member-name">${member.name}</div>
+                      <div class="team-member-email">${member.email}</div>
+                      <div class="team-member-status-text">${member.status}</div>
+                      <div class="team-member-time">Check-in: ${new Date(member.checkinTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                    <div class="team-controls">
+                      <span class="status-badge ${member.statusType}">${
+                        member.statusType === 'online' ? '✅ Trabalhando' :
+                        member.statusType === 'pausa' ? '⏸ Pausa' : '❌ Offline'
+                      }</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- OFFLINE -->
+            ${offlineStatus.length > 0 ? `
+              <div>
+                <div style="font-weight: 700; color: #2c3e50; margin-bottom: 15px; font-size: 12px; text-transform: uppercase;">⚪ Offline (${offlineStatus.length})</div>
+                ${offlineStatus.map(member => `
+                  <div class="team-member offline">
+                    <div style="position: relative;">
+                      <img src="https://i.pravatar.cc/150?u=${member.email}" alt="Avatar" class="team-member-avatar" />
+                      <div class="team-member-status-badge offline"></div>
+                    </div>
+                    <div class="team-member-info">
+                      <div class="team-member-name">${member.name}</div>
+                      <div class="team-member-email">${member.email}</div>
+                      ${member.summary ? `<div class="team-member-status-text" style="color: #7f8c8d;">📝 ${member.summary.substring(0, 80)}...</div>` : ''}
+                      <div class="team-member-time">Check-out: ${new Date(member.checkoutTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                    <span class="status-badge offline">❌ Offline</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div style="padding: 20px 40px; border-top: 1px solid #ecf0f1; background: #f8f9fa; display: flex; gap: 10px; flex-wrap: wrap;">
+            ${!currentUserStatus || currentUserStatus.statusType === 'offline' ? `
+              <button onclick="openCheckinModal()" style="flex: 1; min-width: 150px; padding: 12px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">✅ Check-in</button>
+            ` : `
+              <button onclick="togglePause()" style="flex: 1; min-width: 150px; padding: 12px; background: ${currentUserStatus.statusType === 'pausa' ? '#27ae60' : '#f39c12'}; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                ${currentUserStatus.statusType === 'pausa' ? '✅ Retornar' : '⏸ Pausa/Almoço'}
+              </button>
+              <button onclick="openCheckoutModal()" style="flex: 1; min-width: 150px; padding: 12px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">🚪 Check-out</button>
+            `}
+          </div>
+        </div>
+      `;
+
+      teamView.innerHTML = html;
+    }
+
+    function openCheckinModal() {
+      checkinStatus.value = '';
+      selectedCheckinStatus = 'Trabalhando';
+      document.querySelectorAll('.status-option').forEach(el => el.classList.remove('selected'));
+      document.querySelector('[data-status="Trabalhando"]').classList.add('selected');
+      checkinModal.classList.add('active');
+    }
+
+    function selectCheckinStatus(element, status) {
+      document.querySelectorAll('.status-option').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedCheckinStatus = status;
+    }
+
+    async function confirmCheckin() {
+      try {
+        const response = await fetch('/api/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentUser.email,
+            name: currentUser.name,
+            status: checkinStatus.value || selectedCheckinStatus
+          })
+        });
+
+        if (!response.ok) {
+          alert('Erro ao fazer check-in');
+          return;
+        }
+
+        checkinModal.classList.remove('active');
+        loadTeamStatus();
+      } catch (error) {
+        alert('Erro: ' + error.message);
+      }
+    }
+
+    function openCheckoutModal() {
+      checkoutSummary.value = '';
+      checkoutModal.classList.add('active');
+    }
+
+    async function confirmCheckout() {
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentUser.email,
+            summary: checkoutSummary.value || 'Dia finalizado'
+          })
+        });
+
+        if (!response.ok) {
+          alert('Erro ao fazer check-out');
+          return;
+        }
+
+        checkoutModal.classList.remove('active');
+        loadTeamStatus();
+      } catch (error) {
+        alert('Erro: ' + error.message);
+      }
+    }
+
+    async function togglePause() {
+      if (!currentUserStatus) return;
+
+      const newStatus = currentUserStatus.statusType === 'pausa' ? 'online' : 'pausa';
+      const statusText = newStatus === 'pausa' ? 'Em Pausa' : 'Trabalhando';
+
+      try {
+        await fetch(`/api/user-status/${currentUser.email}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            statusType: newStatus,
+            status: statusText
+          })
+        });
+
+        loadTeamStatus();
+      } catch (error) {
+        alert('Erro ao atualizar status: ' + error.message);
+      }
+    }
+
+    // Team view switch function
+    function switchToTeam() {
+      switchView('team');
+    }
+
+    // Event Listeners for Check-in/Check-out
+    cancelCheckinBtn.addEventListener('click', () => {
+      checkinModal.classList.remove('active');
+    });
+
+    confirmCheckinBtn.addEventListener('click', confirmCheckin);
+
+    cancelCheckoutBtn.addEventListener('click', () => {
+      checkoutModal.classList.remove('active');
+    });
+
+    confirmCheckoutBtn.addEventListener('click', confirmCheckout);
 
     function updateUserProfile() {
       userName.textContent = currentUser.name;
