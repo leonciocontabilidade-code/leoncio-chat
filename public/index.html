@@ -247,6 +247,80 @@
       background: #3a3d4a;
     }
 
+    /* ===== SIDEBAR TABS ===== */
+    .sidebar-tab {
+      flex: 1;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .sidebar-tab:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .sidebar-tab.active {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+    }
+
+    /* ===== NOTICES ===== */
+    .notice-item {
+      background: white;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 4px solid #667eea;
+      color: #2c3e50;
+    }
+
+    .notice-item:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transform: translateX(5px);
+    }
+
+    .notice-item.unread {
+      background: #f0f4ff;
+      font-weight: 600;
+    }
+
+    .notice-title {
+      color: #2c3e50;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .notice-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #7f8c8d;
+    }
+
+    .notice-author {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .unread-badge {
+      display: inline-block;
+      background: #e74c3c;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
     /* ===== MAIN CONTENT ===== */
     .main-content {
       flex: 1;
@@ -712,8 +786,22 @@
           <small style="color: rgba(255,255,255,0.6);">Clique para editar</small>
         </div>
 
-        <div class="channels-label">Canais</div>
-        <div class="channels" id="channelsList"></div>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+          <button id="chatTabBtn" class="sidebar-tab active" onclick="switchView('chat')">💬 Chat</button>
+          <button id="noticeTabBtn" class="sidebar-tab" onclick="switchView('notices')">📢 Avisos</button>
+        </div>
+
+        <!-- Chat View -->
+        <div id="chatView">
+          <div class="channels-label">Canais</div>
+          <div class="channels" id="channelsList"></div>
+        </div>
+
+        <!-- Notices View -->
+        <div id="noticesView" style="display: none; flex: 1; overflow-y: auto;">
+          <button id="createNoticeBtn" class="btn-icon" style="width: 100%; margin-bottom: 10px; display: none;">➕ Novo Aviso</button>
+          <div id="noticesList" style="padding: 10px; overflow-y: auto; max-height: calc(100% - 50px);"></div>
+        </div>
 
         <div class="sidebar-footer">
           <button class="btn-icon" id="editProfileBtn">⚙️ Perfil</button>
@@ -783,6 +871,52 @@
     </div>
   </div>
 
+  <!-- NOTICE MODAL -->
+  <div id="noticeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Novo Aviso</h2>
+      </div>
+
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="noticeTitle" placeholder="Ex: Prazos Fiscais - Abril" />
+      </div>
+
+      <div class="form-group">
+        <label>Mensagem</label>
+        <textarea id="noticeContent" placeholder="Escreva o aviso aqui..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: vertical; height: 120px;"></textarea>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" id="cancelNoticeBtn">Cancelar</button>
+        <button type="button" class="btn-save" id="saveNoticeBtn">Publicar Aviso</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTICE DETAIL MODAL -->
+  <div id="noticeDetailModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="noticeDetailTitle"></h2>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <p id="noticeDetailContent" style="color: #2c3e50; line-height: 1.6; white-space: pre-wrap;"></p>
+      </div>
+
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <div style="font-weight: 600; margin-bottom: 10px; color: #2c3e50;">📖 Lido por:</div>
+        <div id="noticeReadList" style="font-size: 14px; color: #7f8c8d;"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-save" id="closeNoticeBtn" style="flex: 1;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- COMPANY MODAL -->
   <div id="companyModal" class="modal">
     <div class="modal-content">
@@ -845,9 +979,11 @@
     // Estado
     let currentUser = null;
     let currentChannel = 'geral';
+    let currentView = 'chat';
     let isRegistering = false;
     let socket = null;
     let typingTimeout;
+    let notices = [];
 
     // DOM Elements
     const authPage = document.getElementById('authPage');
@@ -887,6 +1023,24 @@
     const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
     const cancelProfileBtn = document.getElementById('cancelProfileBtn');
     const saveProfileBtn = document.getElementById('saveProfileBtn');
+
+    // Notice Elements
+    const chatTabBtn = document.getElementById('chatTabBtn');
+    const noticeTabBtn = document.getElementById('noticeTabBtn');
+    const chatView = document.getElementById('chatView');
+    const noticesView = document.getElementById('noticesView');
+    const createNoticeBtn = document.getElementById('createNoticeBtn');
+    const noticesList = document.getElementById('noticesList');
+    const noticeModal = document.getElementById('noticeModal');
+    const noticeTitle = document.getElementById('noticeTitle');
+    const noticeContent = document.getElementById('noticeContent');
+    const cancelNoticeBtn = document.getElementById('cancelNoticeBtn');
+    const saveNoticeBtn = document.getElementById('saveNoticeBtn');
+    const noticeDetailModal = document.getElementById('noticeDetailModal');
+    const noticeDetailTitle = document.getElementById('noticeDetailTitle');
+    const noticeDetailContent = document.getElementById('noticeDetailContent');
+    const noticeReadList = document.getElementById('noticeReadList');
+    const closeNoticeBtn = document.getElementById('closeNoticeBtn');
 
     // Toggle Auth
     toggleAuthBtn.addEventListener('click', (e) => {
@@ -977,7 +1131,142 @@
 
       loadChannels();
       loadMessages();
+      loadNotices();
+
+      // Show create notice button if admin
+      if (currentUser.role === 'admin') {
+        createNoticeBtn.style.display = 'block';
+      }
     }
+
+    // ===== NOTICES FUNCTIONS =====
+    function switchView(view) {
+      currentView = view;
+
+      if (view === 'chat') {
+        chatView.style.display = 'block';
+        noticesView.style.display = 'none';
+        chatTabBtn.classList.add('active');
+        noticeTabBtn.classList.remove('active');
+      } else {
+        chatView.style.display = 'none';
+        noticesView.style.display = 'flex';
+        noticesView.style.flexDirection = 'column';
+        chatTabBtn.classList.remove('active');
+        noticeTabBtn.classList.add('active');
+      }
+    }
+
+    async function loadNotices() {
+      try {
+        const response = await fetch('/api/notices');
+        notices = await response.json();
+        displayNotices();
+      } catch (error) {
+        console.error('Erro ao carregar avisos:', error);
+      }
+    }
+
+    function displayNotices() {
+      noticesList.innerHTML = notices.map(notice => {
+        const isUnread = !notice.readBy.includes(currentUser.email);
+        return `
+          <div class="notice-item ${isUnread ? 'unread' : ''}" onclick="openNoticeDetail('${notice.id}')">
+            <div class="notice-title">
+              ${notice.title}
+              ${isUnread ? '<span class="unread-badge">NÃO LIDO</span>' : ''}
+            </div>
+            <div class="notice-meta">
+              <span class="notice-author">${notice.createdBy}</span>
+              <span>${new Date(notice.createdAt).toLocaleDateString('pt-BR')}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openNoticeDetail(noticeId) {
+      const notice = notices.find(n => n.id === noticeId);
+      if (!notice) return;
+
+      // Marcar como lido
+      markNoticeAsRead(noticeId);
+
+      // Preencher modal
+      noticeDetailTitle.textContent = notice.title;
+      noticeDetailContent.textContent = notice.content;
+
+      // Listar quem leu
+      if (notice.readBy.length > 0) {
+        noticeReadList.innerHTML = notice.readBy.map(email => `<div>✅ ${email}</div>`).join('');
+      } else {
+        noticeReadList.textContent = 'Ninguém leu ainda...';
+      }
+
+      noticeDetailModal.classList.add('active');
+    }
+
+    async function markNoticeAsRead(noticeId) {
+      try {
+        await fetch(`/api/notices/${noticeId}/read`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentUser.email })
+        });
+        loadNotices();
+      } catch (error) {
+        console.error('Erro ao marcar como lido:', error);
+      }
+    }
+
+    // Event Listeners for Notices
+    createNoticeBtn.addEventListener('click', () => {
+      noticeTitle.value = '';
+      noticeContent.value = '';
+      noticeModal.classList.add('active');
+    });
+
+    cancelNoticeBtn.addEventListener('click', () => {
+      noticeModal.classList.remove('active');
+    });
+
+    saveNoticeBtn.addEventListener('click', async () => {
+      const title = noticeTitle.value.trim();
+      const content = noticeContent.value.trim();
+
+      if (!title || !content) {
+        alert('Preencha título e mensagem!');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/notices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            content,
+            email: currentUser.email,
+            name: currentUser.name
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.error);
+          return;
+        }
+
+        noticeModal.classList.remove('active');
+        loadNotices();
+      } catch (error) {
+        alert('Erro ao criar aviso: ' + error.message);
+      }
+    });
+
+    closeNoticeBtn.addEventListener('click', () => {
+      noticeDetailModal.classList.remove('active');
+    });
 
     function updateUserProfile() {
       userName.textContent = currentUser.name;

@@ -22,6 +22,7 @@ let users = new Map();
 let messages = [];
 let channels = new Map();
 let connectedUsers = new Map();
+let notices = []; // Mural de Avisos
 let company = {
   name: 'Sua Empresa',
   cnpj: '00.000.000/0000-00',
@@ -212,6 +213,56 @@ app.get('/api/messages/:channel', (req, res) => {
   const { channel } = req.params;
   const channelMessages = messages.filter(m => m.channel === channel);
   res.json(channelMessages);
+});
+
+// ===== MURAL DE AVISOS =====
+
+app.post('/api/notices', (req, res) => {
+  const { title, content, createdBy, email, name } = req.body;
+
+  if (!title || !content) {
+    return res.status(400).json({ error: 'Title and content required' });
+  }
+
+  const user = users.get(email);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Only admins can create notices' });
+  }
+
+  const notice = {
+    id: Date.now().toString(),
+    title,
+    content,
+    createdBy: name || email,
+    email,
+    createdAt: new Date(),
+    readBy: [] // Array de emails de quem leu
+  };
+
+  notices.push(notice);
+  res.json(notice);
+});
+
+app.get('/api/notices', (req, res) => {
+  res.json(notices);
+});
+
+app.put('/api/notices/:id/read', (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
+  const notice = notices.find(n => n.id === id);
+
+  if (!notice) {
+    return res.status(404).json({ error: 'Notice not found' });
+  }
+
+  // Adicionar email à lista de leitura se não estiver já
+  if (!notice.readBy.includes(email)) {
+    notice.readBy.push(email);
+  }
+
+  res.json(notice);
 });
 
 // ===== SOCKET.IO =====
